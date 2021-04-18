@@ -29,7 +29,7 @@ class GameManager(Entity):
             if camera.tag == sgengine.DEFAULT_CAMERA:
                 camera.size = Data2D(80, 60)
         
-        sgengine.framerate = 40
+        sgengine.framerate = 60
         sgengine.log_active = True
         sgengine.change_resolution((800, 600))
         
