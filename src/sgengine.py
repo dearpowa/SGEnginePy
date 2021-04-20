@@ -174,7 +174,7 @@ class Camera(Entity):
         
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
-                self.current_frame.blit(pygame.transform.flip(e.sprite_data, e.sprite_flipped.x, e.sprite_flipped.y), (e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.x))
+                self.current_frame.blit(pygame.transform.rotate(pygame.transform.flip(e.sprite_data, e.sprite_flipped.x, e.sprite_flipped.y), e.sprite_rotation), (e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.x))
         
         w, h = pygame.display.get_surface().get_size()
         self.current_frame = pygame.transform.scale(self.current_frame, (w, h))
@@ -185,6 +185,7 @@ class SpriteRenderer:
         self.sprite_data = None
         self.sprite_flipped = Data2D(False, False)
         self.sprite_pivot = Data2D(0,0)
+        self.sprite_rotation = 0
         print("Sprite renderer created")
     
     def set_sprite(self, sprite_path):
@@ -197,6 +198,9 @@ class Animation:
         self.frame_time = frame_time
         self.last_time = current_time_ms()
         self.current_frame = 0
+    
+    def reset_timer(self):
+        self.last_time = current_time_ms()
     
     def get_frame_at_time(self, time):
         while self.last_time < time:
