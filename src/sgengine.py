@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 
 DEFAULT_CAMERA = "def_c"
 running = False
@@ -94,6 +94,11 @@ def toggle_fullscreen():
     else:
         screen = pygame.display.set_mode(current_res)
         
+def current_time_ms():
+    return round(time.time() * 1000)
+
+def load_image(image_path):
+    return pygame.image.load("assets/" + image_path).convert_alpha()
 
 #basic classes
 class Data2D:
@@ -183,6 +188,22 @@ class SpriteRenderer:
         print("Sprite renderer created")
     
     def set_sprite(self, sprite_path):
-        self.sprite_data = pygame.image.load("assets/" + sprite_path).convert_alpha()
+        self.sprite_data = load_image(sprite_path)
 
+
+class Animation:
+    def __init__(self, frame_time, *frames):
+        self.animation_frames = frames
+        self.frame_time = frame_time
+        self.last_time = current_time_ms()
+        self.current_frame = 0
+    
+    def get_frame_at_time(self, time):
+        while self.last_time < time:
+            self.last_time += self.frame_time
+            self.current_frame += 1
+            
+            if self.current_frame >= len(self.animation_frames):
+                self.current_frame = 0
         
+        return self.animation_frames[self.current_frame]

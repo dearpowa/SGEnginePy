@@ -13,6 +13,18 @@ class TestEntity(Entity, SpriteRenderer):
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
         self.sprite_pivot = Data2D(4, 8)
+        
+        anim1 = sgengine.load_image("simpleguy_small.png")
+        anim1 = pygame.transform.rotate(anim1, 0)
+        anim2 = sgengine.load_image("simpleguy_small.png")
+        anim2 = pygame.transform.rotate(anim2, 90)
+        anim3 = sgengine.load_image("simpleguy_small.png")
+        anim3 = pygame.transform.rotate(anim3, 180)
+        anim4 = sgengine.load_image("simpleguy_small.png")
+        anim4 = pygame.transform.rotate(anim4, 270)
+        
+        self.animation = sgengine.Animation(200, anim1, anim2, anim3, anim4)
+        
         #print(self.current_scene().tag)
     
     def update(self, events):
@@ -62,6 +74,8 @@ class TestEntity(Entity, SpriteRenderer):
             self.sprite_flipped.x = False
         elif self.movement.x < 0:
             self.sprite_flipped.x = True
+            
+        self.sprite_data = self.animation.get_frame_at_time(sgengine.current_time_ms())
         
         
     def fixed_update(self, delta_time):
