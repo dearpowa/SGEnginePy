@@ -1,4 +1,4 @@
-import pygame, time
+import pygame, time, random
 
 DEFAULT_CAMERA = "def_c"
 running = False
@@ -118,6 +118,13 @@ class Scene:
                 camera_list.append(e)
         return camera_list
     
+    def colliders_list(self):
+        colliders_list = []
+        for e in self.entity_list:
+            if issubclass(type(e), Collider):
+                colliders_list.append(e)
+        return colliders_list
+    
     def add_entity(self, entity):
         if issubclass(type(entity), Entity):
             self.entity_list.append(entity)
@@ -138,7 +145,8 @@ class Entity:
         self.position = Data2D(0,0)
         self.drawing_order = 0
         super(Entity, self).__init__()
-        print("Entity created")
+        if log_active:
+            print("Entity created")
         
     def start(self):
         pass
@@ -159,6 +167,7 @@ class Camera(Entity):
         self.size = Data2D(128, 72)
         self.tag = DEFAULT_CAMERA
         self.current_frame = None
+        self.debug_collider = False
         
     def update(self, events):
         pass
@@ -176,6 +185,12 @@ class Camera(Entity):
             if issubclass(type(e), SpriteRenderer):
                 self.current_frame.blit(pygame.transform.rotate(pygame.transform.flip(e.sprite_data, e.sprite_flipped.x, e.sprite_flipped.y), e.sprite_rotation), (e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.x))
         
+        if self.debug_collider:
+            for c in self.current_scene().colliders_list():
+                collider = pygame.Surface((c.provide_size().x, c.provide_size().y))
+                collider.fill((0, 255, 0))
+                self.current_frame.blit(collider, (c.provide_position().x - self.position.x - c.provide_pivot().x, c.provide_position().y - self.position.y - c.provide_pivot().y))
+        
         w, h = pygame.display.get_surface().get_size()
         self.current_frame = pygame.transform.scale(self.current_frame, (w, h))
         screen.blit(self.current_frame, (0,0))
@@ -186,7 +201,8 @@ class SpriteRenderer:
         self.sprite_flipped = Data2D(False, False)
         self.sprite_pivot = Data2D(0,0)
         self.sprite_rotation = 0
-        print("Sprite renderer created")
+        if log_active:
+            print("Sprite renderer created")
     
     def set_sprite(self, sprite_path):
         self.sprite_data = load_image(sprite_path)
@@ -211,3 +227,33 @@ class Animation:
                 self.current_frame = 0
         
         return self.animation_frames[self.current_frame]
+    
+class Collider:
+    def provide_tag(self):
+        if not hasattr(self, "tag"):
+            self.tag = random.random() * 100000
+        
+        return self.tag
+    
+    def provide_position(self):
+        pass
+    
+    def provide_pivot(self):
+        pass
+    
+    def provide_size(self):
+        pass
+    
+    def is_colliding(self, other):
+        rect1 = pygame.Rect((self.provide_position().x - self.provide_pivot().x, self.provide_position().y - self.provide_pivot().y), (self.provide_size().x, self.provide_size().y))
+        rect2 = pygame.Rect((other.provide_position().x - other.provide_pivot().x, other.provide_position().y - other.provide_pivot().y), (other.provide_size().x, other.provide_size().y))
+        
+        if self.provide_tag() == other.provide_tag():
+            return False
+        
+        return rect1.colliderect(rect2)
+    
+    def is_point_colliding(self, point):
+        rect1 = pygame.Rect((self.provide_position().x - self.provide_pivot().x, self.provide_position().y - self.provide_pivot().y), (self.provide_size().x, self.provide_size().y))
+        return rect1.collidepoint((point.x, point.y))
+        

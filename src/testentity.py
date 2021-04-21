@@ -1,9 +1,9 @@
 import pygame
 import sgengine
 from pygame.locals import *
-from sgengine import Entity, Data2D, SpriteRenderer
+from sgengine import Entity, Data2D, SpriteRenderer, Collider
 
-class TestEntity(Entity, SpriteRenderer):
+class TestEntity(Entity, SpriteRenderer, Collider):
     
     def start(self):
         self.movement_speed = 1
@@ -13,7 +13,8 @@ class TestEntity(Entity, SpriteRenderer):
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
         self.sprite_pivot = Data2D(4, 8)
-        self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
+        #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
+        self.virtual_pos = Data2D(0,0)
         
         #print(self.current_scene().tag)
     
@@ -65,12 +66,38 @@ class TestEntity(Entity, SpriteRenderer):
         elif self.movement.x < 0:
             self.sprite_flipped.x = True
             
-        self.sprite_rotation = self.animation.get_frame_at_time(sgengine.current_time_ms())
+        #self.sprite_rotation = self.animation.get_frame_at_time(sgengine.current_time_ms())
         
         
     def fixed_update(self, delta_time):
-        self.position.x += self.movement.x * delta_time
-        self.position.y += self.movement.y * delta_time
+        
+        self.virtual_pos = Data2D(self.position.x, self.position.y)
+        
+        self.virtual_pos.x += self.movement.x * delta_time
+        is_valid_pos_x = True
+
+        for c in self.current_scene().colliders_list():
+            #print("Self tag " + str(self.provide_tag()))
+            if self.is_colliding(c):
+                is_valid_pos_x = False
+                #print("Other tag " + str(c.provide_tag()))
+                break
+            
+        self.virtual_pos.y += self.movement.y * delta_time
+        is_valid_pos_y = True
+        
+        for c in self.current_scene().colliders_list():
+            #print("Self tag " + str(self.provide_tag()))
+            if self.is_colliding(c):
+                is_valid_pos_y = False
+                #print("Other tag " + str(c.provide_tag()))
+                break
+        
+        if is_valid_pos_x:
+            self.position.x = self.virtual_pos.x
+            
+        if is_valid_pos_y:
+            self.position.y = self.virtual_pos.y
         
         self.drawing_order = self.position.y
         
@@ -83,3 +110,12 @@ class TestEntity(Entity, SpriteRenderer):
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))
+                
+    def provide_position(self):
+        return self.virtual_pos
+    
+    def provide_pivot(self):
+        return Data2D(3, -2)
+    
+    def provide_size(self):
+        return Data2D(6, 1)
