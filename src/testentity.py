@@ -12,9 +12,12 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.movement = Data2D(0, 0)
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
-        self.sprite_pivot = Data2D(4, 8)
+        self.set_sprite_pivot(Data2D(4, 8))
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
         self.virtual_pos = Data2D(0,0)
+        self.set_collider_position(self.virtual_pos)
+        self.set_collider_pivot(Data2D(3, -2))
+        self.set_collider_size(Data2D(6, 1))
         
         #print(self.current_scene().tag)
     
@@ -62,16 +65,17 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.movement.y *= self.movement_speed
         
         if self.movement.x > 0:
-            self.sprite_flipped.x = False
+            self.get_sprite_flipped().x = False
         elif self.movement.x < 0:
-            self.sprite_flipped.x = True
+            self.get_sprite_flipped().x = True
             
         #self.sprite_rotation = self.animation.get_frame_at_time(sgengine.current_time_ms())
         
         
     def fixed_update(self, delta_time):
         
-        self.virtual_pos = Data2D(self.position.x, self.position.y)
+        self.virtual_pos.x = self.position.x
+        self.virtual_pos.y = self.position.y
         
         self.virtual_pos.x += self.movement.x * delta_time
         is_valid_pos_x = True
@@ -110,12 +114,3 @@ class TestEntity(Entity, SpriteRenderer, Collider):
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))
-                
-    def provide_position(self):
-        return self.virtual_pos
-    
-    def provide_pivot(self):
-        return Data2D(3, -2)
-    
-    def provide_size(self):
-        return Data2D(6, 1)
