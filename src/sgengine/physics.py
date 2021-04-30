@@ -2,7 +2,30 @@ import sgengine
 import pygame
 import random
 from sgengine import Data2D
+import math
 
+
+def move_entity(entity: sgengine.lifecycle.Entity, how_much: Data2D, delta_time, precision=5):
+    if issubclass(type(entity), Collider):
+        fract = delta_time / precision
+        last_pos = Data2D(entity.position.x, entity.position.y)
+        print(last_pos)
+        is_valid = True
+        for i in range(1, precision + 1):
+            print(i)
+            entity.position.x += round(how_much.x * fract, 1)
+            entity.position.y += round(how_much.y * fract, 1)
+            for c in sgengine.current_scene.colliders_list():
+                if entity.is_colliding(c):
+                    is_valid = False
+        
+        if not is_valid:
+            entity.position.x = last_pos.x
+            entity.position.y = last_pos.y
+    else:
+        entity.position.x += how_much.x * delta_time
+        entity.position.y += how_much.y * delta_time
+    print(entity.position)
 
 class Collider:
     def get_collider_tag(self):

@@ -28,7 +28,7 @@ class GameManager(Entity):
         
         sgengine.framerate = 60
         sgengine.target_framerate = 45
-        sgengine.log_active = True
+        sgengine.log_active = False
         sgengine.change_resolution((800, 600))
         
     def update(self, events):

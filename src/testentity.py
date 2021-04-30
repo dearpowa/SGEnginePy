@@ -92,8 +92,11 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.virtual_pos.x = self.position.x
         self.virtual_pos.y = self.position.y
         
-        self.virtual_pos.x += self.movement.x * delta_time
+        self.virtual_pos.x += self.movement.x
         is_valid_pos_x = True
+
+        if self.movement.x != 0:
+            sgengine.physics.move_entity(self, Data2D(self.movement.x, 0), delta_time)
 
         for c in self.current_scene().colliders_list():
             #print("Self tag " + str(self.provide_tag()))
@@ -102,8 +105,11 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                 #print("Other tag " + str(c.provide_tag()))
                 break
             
-        self.virtual_pos.y += self.movement.y * delta_time
+        self.virtual_pos.y += self.movement.y
         is_valid_pos_y = True
+
+        if self.movement.y != 0:
+            sgengine.physics.move_entity(self, Data2D(0, self.movement.y), delta_time)
         
         for c in self.current_scene().colliders_list():
             #print("Self tag " + str(self.provide_tag()))
@@ -112,11 +118,11 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                 #print("Other tag " + str(c.provide_tag()))
                 break
         
-        if is_valid_pos_x:
-            self.position.x = self.virtual_pos.x
+        # if is_valid_pos_x:
+        #     self.position.x = self.virtual_pos.x
             
-        if is_valid_pos_y:
-            self.position.y = self.virtual_pos.y
+        # if is_valid_pos_y:
+        #     self.position.y = self.virtual_pos.y
         
         self.drawing_order = self.position.y
         
