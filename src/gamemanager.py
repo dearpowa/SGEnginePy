@@ -1,4 +1,5 @@
-from sgengine import Entity, Data2D
+from sgengine import Data2D
+from sgengine.lifecycle import Entity
 from simpletree import Tree
 import sgengine
 import pygame
@@ -19,11 +20,7 @@ class GameManager(Entity):
         tree4.position = Data2D(15, 33)
         tree5.position = Data2D(50, 80)
         
-        self.current_scene().add_entity(tree1)
-        self.current_scene().add_entity(tree2)
-        self.current_scene().add_entity(tree3)
-        self.current_scene().add_entity(tree4)
-        self.current_scene().add_entity(tree5)
+        self.current_scene().add_entities(tree1, tree2, tree3, tree4, tree5)
         
         for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:

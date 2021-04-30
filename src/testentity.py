@@ -1,7 +1,10 @@
 import pygame
 import sgengine
 from pygame.locals import *
-from sgengine import Entity, Data2D, SpriteRenderer, Collider
+from sgengine import Data2D
+from sgengine.screen import SpriteRenderer
+from sgengine.lifecycle import Entity
+from sgengine.physics import Collider
 
 class TestEntity(Entity, SpriteRenderer, Collider):
     
@@ -18,6 +21,9 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.set_collider_position(self.virtual_pos)
         self.set_collider_pivot(Data2D(3, -2))
         self.set_collider_size(Data2D(6, 1))
+        self.audio1 = sgengine.load_audio("shoot2.wav")
+        self.play_audio = False
+        self.played = False
         
         #print(self.current_scene().tag)
     
@@ -35,6 +41,8 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                     self.inputV.x = True
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     self.inputV.y = True
+                if event.key == pygame.K_SPACE:
+                    self.play_audio = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     self.inputH.x = False
@@ -44,6 +52,9 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                     self.inputV.x = False
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     self.inputV.y = False
+                if event.key == pygame.K_SPACE:
+                    self.play_audio = False
+                    self.played = False
         
         self.movement = Data2D(0,0)
         
@@ -68,6 +79,10 @@ class TestEntity(Entity, SpriteRenderer, Collider):
             self.get_sprite_flipped().x = False
         elif self.movement.x < 0:
             self.get_sprite_flipped().x = True
+
+        if self.play_audio and not self.played:
+            self.audio1.play()
+            self.played = True
             
         #self.sprite_rotation = self.animation.get_frame_at_time(sgengine.current_time_ms())
         

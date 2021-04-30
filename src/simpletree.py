@@ -1,4 +1,7 @@
-from sgengine import Entity, SpriteRenderer, Data2D, Collider
+from sgengine import Data2D
+from sgengine.lifecycle import Entity
+from sgengine.screen import SpriteRenderer
+from sgengine.physics import Collider
 
 class Tree(Entity, SpriteRenderer, Collider):
     def start(self):

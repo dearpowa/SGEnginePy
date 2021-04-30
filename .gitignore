@@ -1,4 +1,4 @@
 src/build/
 src/main.spec
 src/dist
-src/__pycache__/
+__pycache__/

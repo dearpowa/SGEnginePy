@@ -1,4 +1,5 @@
-from sgengine import Entity, SpriteRenderer
+from sgengine.lifecycle import Entity
+from sgengine.screen import SpriteRenderer
 import pygame
 
 class BG(Entity, SpriteRenderer):
