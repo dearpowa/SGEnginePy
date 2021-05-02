@@ -10,6 +10,8 @@ class Camera(sgengine.lifecycle.Entity):
         self.debug_collider = False
     
     def draw(self, screen):
+        camera_rect = pygame.Rect(0, 0, self.size.x, self.size.y)
+
         entity_list = self.current_scene().entity_list[:]
         
         entity_list.sort(key=lambda e: e.drawing_order)
@@ -21,17 +23,20 @@ class Camera(sgengine.lifecycle.Entity):
 
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
+                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x)
                 sprite_to_render = e.get_sprite_data()
+
+                sprite_rect = pygame.Rect(sprite_screen_pos.x, sprite_screen_pos.y, sprite_to_render.get_width(), sprite_to_render.get_height())
+
+                if not sprite_rect.colliderect(camera_rect):
+                    continue
+                
                 if e.get_sprite_flipped().x or e.get_sprite_flipped().y:
                     sprite_to_render = pygame.transform.flip(sprite_to_render, e.get_sprite_flipped().x, e.get_sprite_flipped().y)
 
                 if e.get_sprite_rotation() != 0:
                     sprite_to_render = pygame.transform.rotate(sprite_to_render, e.get_sprite_rotation())
 
-                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x)
-
-                #TODO: Rivisitare il check per renderizzare solo gli sprite sullo schermo
-                #if (sprite_screen_pos.x >= 0 and sprite_screen_pos.x <= self.size.x) and (sprite_screen_pos.y >= 0 and sprite_screen_pos.y <= self.size.y):
                 self.current_frame.blit(sprite_to_render, (sprite_screen_pos.x, sprite_screen_pos.y))
         
         if self.debug_collider:
