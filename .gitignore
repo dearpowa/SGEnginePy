@@ -3,3 +3,4 @@ src/main.spec
 src/dist
 __pycache__/
 .vscode/settings.json
+main.spec
