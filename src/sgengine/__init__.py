@@ -59,8 +59,12 @@ def start(scene):
     
     if log_active:
         print("Start")
-    for entity in current_scene.entity_list:
-        entity.start()
+
+    try:
+        for entity in current_scene.entity_list:
+            entity.start()
+    finally:
+        pass
     
     while running:
         events = pygame.event.get()

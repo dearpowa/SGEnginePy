@@ -8,9 +8,6 @@ class Camera(sgengine.lifecycle.Entity):
         self.tag = sgengine.DEFAULT_CAMERA
         self.current_frame = None
         self.debug_collider = False
-        
-    def update(self, events):
-        pass
     
     def draw(self, screen):
         entity_list = self.current_scene().entity_list[:]
@@ -23,7 +20,14 @@ class Camera(sgengine.lifecycle.Entity):
         
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
-                self.current_frame.blit(pygame.transform.rotate(pygame.transform.flip(e.get_sprite_data(), e.get_sprite_flipped().x, e.get_sprite_flipped().y), e.get_sprite_rotation()), (e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x))
+                sprite_to_render = e.get_sprite_data()
+                if e.get_sprite_flipped().x or e.get_sprite_flipped().y:
+                    sprite_to_render = pygame.transform.flip(sprite_to_render, e.get_sprite_flipped().x, e.get_sprite_flipped().y)
+
+                if e.get_sprite_rotation() != 0:
+                    sprite_to_render = pygame.transform.rotate(sprite_to_render, e.get_sprite_rotation())
+
+                self.current_frame.blit(sprite_to_render, (e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x))
         
         if self.debug_collider:
             for c in self.current_scene().colliders_list():
