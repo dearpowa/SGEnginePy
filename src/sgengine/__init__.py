@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+from threading import Thread
 
 DEFAULT_CAMERA = "def_c"
 running = False
@@ -12,6 +13,7 @@ target_framerate = 60
 log_active = False
 current_res = (0,0)
 fullscreen = False
+update_thread = None
 
 #stuff for running
 def clear_screen():
@@ -22,6 +24,22 @@ def update(events):
     global window, current_scene
     for entity in current_scene.entity_list:
         entity.update(events)
+
+def update_for_thread():
+    global running, clock
+    while running:
+        events = pygame.event.get()
+        
+        for event in events:
+            if event.type == pygame.QUIT:
+                running = False
+
+        try:
+            update(events)
+            time.sleep(0.016)
+            #clock.tick(framerate)
+        finally:
+            pass
         
 def fixed_update():
     global current_scene, clock, target_framerate
@@ -29,6 +47,8 @@ def fixed_update():
     clock.tick(framerate)
     t = pygame.time.get_ticks()
     time = clock.get_time()
+    if time == 0:
+        time = 1
     delta_time = target_framerate / (1000 / time)
     if log_active:
         print("Delta time: " + str(delta_time))
@@ -61,16 +81,14 @@ def start(scene):
         print("Start")
     for entity in current_scene.entity_list:
         entity.start()
+
+    update_thread = Thread(target=update_for_thread)
+    update_thread.start()
     
     while running:
-        events = pygame.event.get()
-        
-        for event in events:
-            if event.type == pygame.QUIT:
-                running = False
-                
+             
         try:
-            update(events)
+            #update(events)
             fixed_update()
             draw()
         finally:
