@@ -38,7 +38,7 @@ def fixed_update():
 
 def draw():
     global window, current_scene
-    clear_screen()
+    #clear_screen()
     for camera in current_scene.camera_list():
         camera.draw(window)
     pygame.display.update()
@@ -59,8 +59,12 @@ def start(scene):
     
     if log_active:
         print("Start")
-    for entity in current_scene.entity_list:
-        entity.start()
+
+    try:
+        for entity in current_scene.entity_list:
+            entity.start()
+    finally:
+        pass
     
     while running:
         events = pygame.event.get()
@@ -86,7 +90,7 @@ def start(scene):
 def change_resolution(res):
     global window, current_res
     current_res = res
-    window = pygame.display.set_mode(current_res)
+    window = pygame.display.set_mode(current_res, flags=pygame.DOUBLEBUF)
 
 def toggle_fullscreen():
     global window, current_res, fullscreen

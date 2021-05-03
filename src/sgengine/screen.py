@@ -8,22 +8,36 @@ class Camera(sgengine.lifecycle.Entity):
         self.tag = sgengine.DEFAULT_CAMERA
         self.current_frame = None
         self.debug_collider = False
-        
-    def update(self, events):
-        pass
     
     def draw(self, screen):
+        camera_rect = pygame.Rect(0, 0, self.size.x, self.size.y)
+
         entity_list = self.current_scene().entity_list[:]
         
         entity_list.sort(key=lambda e: e.drawing_order)
         
-        flags = pygame.SRCALPHA|pygame.HWSURFACE
-        self.current_frame = pygame.Surface((self.size.x, self.size.y), flags)
-        self.current_frame = self.current_frame.convert_alpha()
-        
+        if self.check_for_frame():
+            flags = pygame.HWSURFACE
+            self.current_frame = pygame.Surface((self.size.x, self.size.y), flags)
+        self.current_frame.fill((255, 255, 255))
+
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
-                self.current_frame.blit(pygame.transform.rotate(pygame.transform.flip(e.get_sprite_data(), e.get_sprite_flipped().x, e.get_sprite_flipped().y), e.get_sprite_rotation()), (e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x))
+                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.get_sprite_pivot().x, e.position.y - self.position.y - e.get_sprite_pivot().x)
+                sprite_to_render = e.get_sprite_data()
+
+                sprite_rect = pygame.Rect(sprite_screen_pos.x, sprite_screen_pos.y, sprite_to_render.get_width(), sprite_to_render.get_height())
+
+                if not sprite_rect.colliderect(camera_rect):
+                    continue
+                
+                if e.get_sprite_flipped().x or e.get_sprite_flipped().y:
+                    sprite_to_render = pygame.transform.flip(sprite_to_render, e.get_sprite_flipped().x, e.get_sprite_flipped().y)
+
+                if e.get_sprite_rotation() != 0:
+                    sprite_to_render = pygame.transform.rotate(sprite_to_render, e.get_sprite_rotation())
+
+                self.current_frame.blit(sprite_to_render, (sprite_screen_pos.x, sprite_screen_pos.y))
         
         if self.debug_collider:
             for c in self.current_scene().colliders_list():
@@ -34,6 +48,9 @@ class Camera(sgengine.lifecycle.Entity):
         w, h = pygame.display.get_surface().get_size()
         self.current_frame = pygame.transform.scale(self.current_frame, (w, h))
         screen.blit(self.current_frame, (0,0))
+
+    def check_for_frame(self):
+        return self.current_frame == None or (self.current_frame.get_width() != self.size.x or self.current_frame.get_height() != self.size.y)
 
 class SpriteRenderer:
     def set_sprite_data(self, sprite_data):
