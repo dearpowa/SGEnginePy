@@ -25,6 +25,9 @@ def move_entity(entity: sgengine.lifecycle.Entity, how_much: Data2D, delta_time,
             for c in sgengine.current_scene.colliders_list():
                 if virtual_collider.is_colliding(c):
                     is_valid = False
+                    continue
+            if not is_valid:
+                continue
         
         if is_valid:
             entity.position.x = virtual_position.x
