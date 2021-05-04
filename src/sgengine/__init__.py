@@ -87,18 +87,20 @@ def start(scene):
     if log_active:
         print("Ended")
     
-def change_resolution(res):
+def change_resolution(res, flags=0):
     global window, current_res
     current_res = res
-    window = pygame.display.set_mode(current_res, flags=pygame.DOUBLEBUF|pygame.HWSURFACE)
+    default_flags = pygame.DOUBLEBUF|pygame.HWSURFACE
+    flags = default_flags|flags
+    window = pygame.display.set_mode(current_res, flags=flags)
 
 def toggle_fullscreen():
-    global window, current_res, fullscreen
+    global fullscreen
     fullscreen = not fullscreen
     if fullscreen:
-        window = pygame.display.set_mode(current_res, flags=pygame.FULLSCREEN|pygame.DOUBLEBUF|pygame.HWSURFACE)
+        change_resolution(current_res, flags=pygame.FULLSCREEN)
     else:
-        window = pygame.display.set_mode(current_res, flags=pygame.DOUBLEBUF|pygame.HWSURFACE)
+        change_resolution(current_res)
         
 def current_time_ms():
     return round(time.time() * 1000)
