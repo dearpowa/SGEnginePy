@@ -15,7 +15,9 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.movement = Data2D(0, 0)
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
-        self.sprite_pivot = Data2D(4, 8)
+        #self.sprite_pivot = Data2D(4, 8)
+        self.sprite_pivot_perc = Data2D(0.5, 1)
+        self.sprite_resize(Data2D(16, 16))
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
         self.virtual_pos = Data2D(0,0)
         self.collider_position = self.virtual_pos

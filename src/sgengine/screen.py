@@ -61,7 +61,10 @@ class SpriteRenderer:
 
     @sprite_data.setter
     def sprite_data(self, sprite_data):
+        sprite_pivot_perc_temp = self.sprite_pivot_perc
         self._sprite_data = sprite_data
+        if self.sprite_data != None:
+            self.sprite_pivot_perc = sprite_pivot_perc_temp
     
     @property
     def sprite_flipped(self):
@@ -82,7 +85,19 @@ class SpriteRenderer:
     @sprite_pivot.setter
     def sprite_pivot(self, sprite_pivot):
         self._sprite_pivot = sprite_pivot
-    
+
+    @property
+    def sprite_pivot_perc(self):
+        if self.sprite_data != None:
+            pivot_perc = Data2D(self.sprite_pivot.x / self.sprite_data.get_width(), self._sprite_pivot.y / self.sprite_data.get_height())
+            return pivot_perc
+        return None
+
+    @sprite_pivot_perc.setter
+    def sprite_pivot_perc(self, sprite_pivot_perc):
+        if self.sprite_data != None and sprite_pivot_perc != None:
+            self.sprite_pivot = Data2D(sprite_pivot_perc.x * self.sprite_data.get_width(), sprite_pivot_perc.y * self.sprite_data.get_height())
+
     @property
     def sprite_rotation(self):
         if not hasattr(self, "_sprite_rotation"):
@@ -95,6 +110,10 @@ class SpriteRenderer:
 
     def set_sprite(self, sprite_path):
         self.sprite_data = sgengine.load_image(sprite_path)
+
+    def sprite_resize(self, resize_to):
+        if self.sprite_data != None:
+            self.sprite_data = pygame.transform.scale(self.sprite_data, (resize_to.x, resize_to.y))
 
 class Animation:
     def __init__(self, frame_time, *frames):
