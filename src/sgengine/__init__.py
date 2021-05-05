@@ -14,10 +14,6 @@ current_res = (0,0)
 fullscreen = False
 
 #stuff for running
-def clear_screen():
-    global window
-    window.fill((255, 255, 255))
-
 def update(events):
     global window, current_scene
     for entity in current_scene.entity_list:
@@ -38,7 +34,6 @@ def fixed_update():
 
 def draw():
     global window, current_scene
-    #clear_screen()
     for camera in current_scene.camera_list():
         camera.draw(window)
     pygame.display.update()
