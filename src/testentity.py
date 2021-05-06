@@ -135,8 +135,10 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.is_big = not self.is_big
         if self.is_big:
             self.sprite_resize(Data2D(16, 16))
+            self.collider_size = Data2D(12, 4)
         else:
             self.sprite_resize(Data2D(8, 8))
+            self.collider_size = Data2D(6, 2)
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))
