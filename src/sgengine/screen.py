@@ -23,7 +23,7 @@ class Camera(sgengine.lifecycle.Entity):
 
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
-                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.x)
+                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.y)
                 sprite_to_render = e.sprite_data
 
                 sprite_rect = pygame.Rect(sprite_screen_pos.x, sprite_screen_pos.y, sprite_to_render.get_width(), sprite_to_render.get_height())
