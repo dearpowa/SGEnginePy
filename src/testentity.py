@@ -20,8 +20,9 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
         self.virtual_pos = Data2D(0,0)
         self.collider_position = self.virtual_pos
-        self.collider_pivot = Data2D(3, -2)
-        self.collider_size = Data2D(6, 1)
+        #self.collider_pivot = Data2D(3, -2)
+        self.collider_size = Data2D(6, 2)
+        self.collider_pivot_perc = Data2D(0.5, 1)
         self.audio1 = sgengine.load_audio("shoot2.wav")
         self.play_audio = False
         self.played = False

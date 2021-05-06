@@ -8,8 +8,9 @@ class Tree(Entity, SpriteRenderer, Collider):
         self.set_sprite("simpletree.png")
         self.sprite_pivot = Data2D(4, 8)
         self.collider_position = self.position
-        self.collider_pivot = Data2D(3, 0)
+        #self.collider_pivot = Data2D(3, 0)
         self.collider_size = Data2D(6, 2)
+        self.collider_pivot_perc = Data2D(0.5, 1)
         
     def fixed_update(self, delta_time):
         self.drawing_order = self.position.y

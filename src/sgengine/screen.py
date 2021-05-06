@@ -9,6 +9,7 @@ class Camera(sgengine.lifecycle.Entity):
         self.current_frame = None
         self.debug_collider = False
         self.debug_sprite_pivot = False
+        self.debug_collider_pivot = False
     
     def draw(self, screen):
         camera_rect = pygame.Rect(0, 0, self.size.x, self.size.y)
@@ -49,6 +50,9 @@ class Camera(sgengine.lifecycle.Entity):
                 collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
                 collider.fill((0, 255, 0))
                 self.current_frame.blit(collider, (c.collider_position.x - self.position.x - c.collider_pivot.x, c.collider_position.y - self.position.y - c.collider_pivot.y))
+                if self.debug_collider_pivot:
+                    collider_pivot_pos = Data2D(c.collider_position.x - self.position.x, c.collider_position.y - self.position.y)
+                    pygame.draw.circle(self.current_frame, (255, 128, 0), (collider_pivot_pos.x, collider_pivot_pos.y), 1)
         
         w, h = pygame.display.get_surface().get_size()
         self.current_frame = pygame.transform.scale(self.current_frame, (w, h))
@@ -68,6 +72,9 @@ class SpriteRenderer:
     def sprite_data(self, sprite_data):
         sprite_pivot_perc_temp = self.sprite_pivot_perc
         self._sprite_data = sprite_data
+        #Aggiunto in modo che al cambio dello sprite
+        #il pivot rimanaga lo "stesso" in percentuale alle grandezze
+        #diverse
         if self.sprite_data != None:
             self.sprite_pivot_perc = sprite_pivot_perc_temp
     
