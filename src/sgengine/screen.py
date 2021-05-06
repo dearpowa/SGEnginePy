@@ -8,6 +8,7 @@ class Camera(sgengine.lifecycle.Entity):
         self.tag = sgengine.DEFAULT_CAMERA
         self.current_frame = None
         self.debug_collider = False
+        self.debug_sprite_pivot = False
     
     def draw(self, screen):
         camera_rect = pygame.Rect(0, 0, self.size.x, self.size.y)
@@ -38,7 +39,11 @@ class Camera(sgengine.lifecycle.Entity):
                     sprite_to_render = pygame.transform.rotate(sprite_to_render, e.sprite_rotation)
 
                 self.current_frame.blit(sprite_to_render, (sprite_screen_pos.x, sprite_screen_pos.y))
-        
+
+                if self.debug_sprite_pivot:
+                    sprite_pivot_pos = Data2D(e.position.x - self.position.x, e.position.y - self.position.y)
+                    pygame.draw.circle(self.current_frame, (255, 255, 0), (sprite_pivot_pos.x, sprite_pivot_pos.y), 1)
+
         if self.debug_collider:
             for c in self.current_scene().colliders_list():
                 collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
