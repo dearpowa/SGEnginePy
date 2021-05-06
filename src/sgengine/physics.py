@@ -55,10 +55,13 @@ class Collider:
         #Aggiunto per gestire il cambio di grandezze del collider
         #in modo da mantenere lo stesso pivot in percentuale alla grandezza
         self.collider_pivot_perc = current_pivot_perc
+
+    def get_rect(self):
+        return pygame.Rect(self.collider_position.x - self.collider_pivot.x, self.collider_position.y - self.collider_pivot.y, self.collider_size.x, self.collider_size.y)
     
     def is_colliding(self, other):
-        rect1 = pygame.Rect((self.collider_position.x - self.collider_pivot.x, self.collider_position.y - self.collider_pivot.y), (self.collider_size.x, self.collider_size.y))
-        rect2 = pygame.Rect((other.collider_position.x - other.collider_pivot.x, other.collider_position.y - other.collider_pivot.y), (other.collider_size.x, other.collider_size.y))
+        rect1 = self.get_rect()
+        rect2 = other.get_rect()
 
         if self.get_collider_tag() == other.get_collider_tag():
             return False
