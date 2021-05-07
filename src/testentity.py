@@ -101,27 +101,13 @@ class TestEntity(Entity, SpriteRenderer, Collider):
 
         if self.movement.x != 0:
             sgengine.physics.move_entity(self, Data2D(self.movement.x, 0), delta_time, precision=5)
-
-        for c in self.current_scene().colliders_list():
-            #print("Self tag " + str(self.provide_tag()))
-            if self.is_colliding(c):
-                is_valid_pos_x = False
-                #print("Other tag " + str(c.provide_tag()))
-                break
             
         self.virtual_pos.y += self.movement.y
         is_valid_pos_y = True
 
-        if self.movement.y != 0:
-            sgengine.physics.move_entity(self, Data2D(0, self.movement.y), delta_time, precision=10)
-        
-        for c in self.current_scene().colliders_list():
-            #print("Self tag " + str(self.provide_tag()))
-            if self.is_colliding(c):
-                is_valid_pos_y = False
-                #print("Other tag " + str(c.provide_tag()))
-                break
-        
+        #if self.movement.y != 0:
+        #    sgengine.physics.move_entity(self, Data2D(0, self.movement.y), delta_time, precision=10)
+        sgengine.physics.apply_gravity(self, delta_time)
         # if is_valid_pos_x:
         #     self.position.x = self.virtual_pos.x
             

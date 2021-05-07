@@ -4,6 +4,8 @@ import random
 from sgengine import Data2D
 import math
 
+def apply_gravity(entity: sgengine.lifecycle.Entity, delta_time):
+    move_entity(entity, Data2D(0, 2), delta_time)
 
 def move_entity(entity: sgengine.lifecycle.Entity, how_much: Data2D, delta_time, precision=5):
     if issubclass(type(entity), Collider):
@@ -38,14 +40,16 @@ def move_entity(entity: sgengine.lifecycle.Entity, how_much: Data2D, delta_time,
     #print(entity.position)
 
 class Collider:
-    def set_collider_tag(self, tag):
-        self.tag = tag
-
-    def get_collider_tag(self):
+    @property
+    def collider_tag(self):
         if not hasattr(self, "_collider_tag"):
             self._collider_tag = random.random() * 100000
         
         return self._collider_tag
+    
+    @collider_tag.setter
+    def collider_tag(self, tag):
+        self._collider_tag = tag
 
     @property
     def collider_position(self):
@@ -99,7 +103,7 @@ class Collider:
         rect1 = self.get_rect()
         rect2 = other.get_rect()
 
-        if self.get_collider_tag() == other.get_collider_tag():
+        if self.collider_tag == other.collider_tag:
             return False
         
         return rect1.colliderect(rect2)

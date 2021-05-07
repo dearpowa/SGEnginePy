@@ -25,12 +25,12 @@ class GameManager(Entity):
         for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:
                 camera.size = Data2D(160, 120)
-                camera.debug_sprite_pivot = True
-                camera.debug_collider = True
+                camera.debug_sprite_pivot = False
+                camera.debug_collider = False
                 camera.debug_collider_pivot = True
         
-        sgengine.framerate = 60
-        sgengine.target_framerate = 60
+        sgengine.framerate = 30
+        sgengine.target_framerate = 30
         sgengine.log_active = True
         sgengine.change_resolution((800, 600))
         
