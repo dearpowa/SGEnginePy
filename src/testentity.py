@@ -15,15 +15,18 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.movement = Data2D(0, 0)
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
-        self.set_sprite_pivot(Data2D(4, 8))
+        #self.sprite_pivot = Data2D(0, 8)
+        self.sprite_pivot_perc = Data2D(0.5, 1)
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
         self.virtual_pos = Data2D(0,0)
-        self.set_collider_position(self.virtual_pos)
-        self.set_collider_pivot(Data2D(3, -2))
-        self.set_collider_size(Data2D(6, 1))
+        self.collider_position = self.virtual_pos
+        #self.collider_pivot = Data2D(3, -2)
+        self.collider_size = Data2D(6, 2)
+        self.collider_pivot_perc = Data2D(0.5, 1)
         self.audio1 = sgengine.load_audio("shoot2.wav")
         self.play_audio = False
         self.played = False
+        self.is_big = False
         
         #print(self.current_scene().tag)
     
@@ -43,6 +46,7 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                     self.inputV.y = True
                 if event.key == pygame.K_SPACE:
                     self.play_audio = True
+                    self.toggle_resize()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     self.inputH.x = False
@@ -76,9 +80,9 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.movement.y *= self.movement_speed
         
         if self.movement.x > 0:
-            self.get_sprite_flipped().x = False
+            self.sprite_flipped.x = False
         elif self.movement.x < 0:
-            self.get_sprite_flipped().x = True
+            self.sprite_flipped.x = True
 
         if self.play_audio and not self.played:
             self.audio1.play()
@@ -132,6 +136,15 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         #print(str(self.position.x) + " " + str(self.position.y))
         
         
+
+    def toggle_resize(self):
+        self.is_big = not self.is_big
+        if self.is_big:
+            self.sprite_resize(Data2D(16, 16))
+            self.collider_size = Data2D(12, 4)
+        else:
+            self.sprite_resize(Data2D(8, 8))
+            self.collider_size = Data2D(6, 2)
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))
