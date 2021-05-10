@@ -1,4 +1,4 @@
-import sgengine
+import sgengine as sg
 from sgengine import Data2D
 
 class Scene:
@@ -9,14 +9,21 @@ class Scene:
     def camera_list(self):
         camera_list = []
         for e in self.entity_list:
-            if issubclass(type(e), sgengine.screen.Camera):
+            if issubclass(type(e), sg.screen.Camera):
                 camera_list.append(e)
         return camera_list
     
     def colliders_list(self):
         colliders_list = []
         for e in self.entity_list:
-            if issubclass(type(e), sgengine.physics.Collider):
+            if issubclass(type(e), sg.physics.Collider):
+                colliders_list.append(e)
+        return colliders_list
+
+    def colliders2_list(self):
+        colliders_list = []
+        for e in self.entity_list:
+            if issubclass(type(e), sg.physics.Collider2):
                 colliders_list.append(e)
         return colliders_list
     
@@ -31,7 +38,7 @@ class Entity:
     def __init__(self):
         self.position = Data2D(0,0)
         self.drawing_order = 0
-        if sgengine.log_active:
+        if sg.log_active:
             print("Entity created")
         
     def start(self):
@@ -45,4 +52,4 @@ class Entity:
         pass
     
     def current_scene(self):
-        return sgengine.current_scene
+        return sg.current_scene

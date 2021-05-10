@@ -1,12 +1,13 @@
 import pygame
-import sgengine
+import sgengine as sg
+import pymunk as pk
 from pygame.locals import *
 from sgengine import Data2D
 from sgengine.screen import SpriteRenderer
 from sgengine.lifecycle import Entity
 from sgengine.physics import Collider
 
-class TestEntity(Entity, SpriteRenderer, Collider):
+class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
     
     def start(self):
         self.movement_speed = 1
@@ -19,11 +20,13 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.sprite_pivot_perc = Data2D(0.5, 1)
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
         self.virtual_pos = Data2D(0,0)
-        self.collider_position = self.virtual_pos
+        #self.collider_position = self.virtual_pos
         #self.collider_pivot = Data2D(3, -2)
-        self.collider_size = Data2D(6, 2)
-        self.collider_pivot_perc = Data2D(0.5, 1)
-        self.audio1 = sgengine.load_audio("shoot2.wav")
+        #self.collider_size = Data2D(6, 2)
+        #self.collider_pivot_perc = Data2D(0.5, 1)
+        self.start_collider(self.position, Data2D(0, 0), Data2D(8, 8), pk.Body.KINEMATIC)
+        
+        self.audio1 = sg.load_audio("shoot2.wav")
         self.play_audio = False
         self.played = False
         self.is_big = False
@@ -87,11 +90,18 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         if self.play_audio and not self.played:
             self.audio1.play()
             self.played = True
+
+        self.collider_velocity = self.movement
+
+        #print(f"Vel: {self.collider_velocity}")
             
         #self.sprite_rotation = self.animation.get_frame_at_time(sgengine.current_time_ms())
         
         
     def fixed_update(self, delta_time):
+
+        #print(f"Col Pos: {self.collider_position}")
+        print(f"Pos: {self.position}")
         
         self.virtual_pos.x = self.position.x
         self.virtual_pos.y = self.position.y
@@ -99,15 +109,15 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.virtual_pos.x += self.movement.x
         is_valid_pos_x = True
 
-        if self.movement.x != 0:
-            sgengine.physics.move_entity(self, Data2D(self.movement.x, 0), delta_time, precision=5)
+        #if self.movement.x != 0:
+        #    sg.physics.move_entity(self, Data2D(self.movement.x, 0), delta_time, precision=5)
             
         self.virtual_pos.y += self.movement.y
         is_valid_pos_y = True
 
         #if self.movement.y != 0:
         #    sgengine.physics.move_entity(self, Data2D(0, self.movement.y), delta_time, precision=10)
-        sgengine.physics.apply_gravity(self, delta_time)
+        #sg.physics.apply_gravity(self, delta_time)
         # if is_valid_pos_x:
         #     self.position.x = self.virtual_pos.x
             
@@ -117,7 +127,7 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         self.drawing_order = self.position.y
         
         for camera in self.current_scene().camera_list():
-            if camera.tag == sgengine.DEFAULT_CAMERA:
+            if camera.tag == sg.DEFAULT_CAMERA:
                 camera.position = Data2D(self.position.x - (camera.size.x / 2), self.position.y - (camera.size.y / 2))
         #print(str(self.position.x) + " " + str(self.position.y))
         
