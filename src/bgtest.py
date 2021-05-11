@@ -13,4 +13,4 @@ class BG(sg.lifecycle.Entity,
         self.position = sg.Data2D(0, 100)
         #self.collider_position = self.position
         #self.collider_size = sg.Data2D(100, 10)
-        self.start_collider(self.position, sg.Data2D(0, 0), sg.Data2D(100, 10), pk.Body.STATIC)
+        self.start_collider(self.position, sg.Data2D(1, 1), sg.Data2D(100, 10), pk.Body.STATIC)

@@ -32,7 +32,7 @@ class GameManager(Entity):
         sgengine.framerate = 30
         sgengine.target_framerate = 30
         sgengine.log_active = True
-        sgengine.physics.physics_space.gravity = 0, 1000
+        sgengine.physics.physics_space.gravity = 0, 1
         sgengine.change_resolution((800, 600))
         
     def update(self, events):

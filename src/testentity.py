@@ -10,7 +10,7 @@ from sgengine.physics import Collider
 class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
     
     def start(self):
-        self.movement_speed = 300
+        self.movement_speed = 1
         self.inputH = Data2D(False, False)
         self.inputV = Data2D(False, False)
         self.movement = Data2D(0, 0)
@@ -49,7 +49,8 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
                     self.inputV.y = True
                 if event.key == pygame.K_SPACE:
                     self.play_audio = True
-                    self.toggle_resize()
+                    self.jump()
+                    #self.toggle_resize()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     self.inputH.x = False
@@ -140,6 +141,10 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
             #self.collider_size = Data2D(12, 4)
         else:
             self.sprite_resize(Data2D(8, 8))
+
+
+    def jump(self):
+        self.collider_velocity = Data2D(self.collider_velocity.x, -5)
             #self.collider_size = Data2D(6, 2)
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)

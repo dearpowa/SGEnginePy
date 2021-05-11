@@ -52,7 +52,9 @@ def set_gravity(gravity):
         physics_space.gravity = gravity.x, dgravity.y
 
 def run_physics():
-    physics_space.step(1/60)
+    
+    for x in range(120):
+        physics_space.step(1/120)
     for c in sg.current_scene.colliders2_list():
         c.update_scene_position()
 
