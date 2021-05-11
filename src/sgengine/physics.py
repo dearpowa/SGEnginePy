@@ -49,10 +49,10 @@ def init_physics():
 
 def set_gravity(gravity):
     if physics_space != None:
-        physics_space.gravity = gravity.x, gravity.y
+        physics_space.gravity = gravity.x, dgravity.y
 
 def run_physics():
-    physics_space.step(1)
+    physics_space.step(1/60)
     for c in sg.current_scene.colliders2_list():
         c.update_scene_position()
 
@@ -128,6 +128,7 @@ class Collider:
     def is_point_colliding(self, point):
         rect1 = pygame.Rect((self.collider_position.x - self.collider_pivot.x, self.collider_position.y - self.collider_pivot.y), (self.collider_size.x, self.collider_size.y))
         return rect1.collidepoint((point.x, point.y))
+
 class Collider2:
     def collider_has_started(self):
         if not hasattr(self, "_collider_has_started"):
@@ -142,7 +143,14 @@ class Collider2:
 
     @collider_body.setter
     def collider_body(self, collider_body):
+        #Quando cambio il body di un collider
+        #devo anche rimuoverlo dallo spazio fisico
+        if self.collider_body != None:
+            physics_space.remove(self.collider_body)
+
         self._collider_body = collider_body
+        physics_space.add(self.collider_body)
+
 
     @property
     def collider_shape(self):
@@ -152,9 +160,13 @@ class Collider2:
 
     @collider_shape.setter
     def collider_shape(self, collider_shape):
+        #Quando cambio lo shape di un collider
+        #devo anche rimuoverlo dallo spazio fisico
+        if self.collider_shape != None:
+            physics_space.remove(self.collider_shape)
+
         self._collider_shape = collider_shape
-        if self.collider_body != None and not(self.collider_body in physics_space.bodies):
-            physics_space.add(self.collider_body, self.collider_shape)
+        physics_space.add(self.collider_shape)
 
 
     @property
@@ -177,6 +189,7 @@ class Collider2:
     @collider_pivot.setter
     def collider_pivot(self, collider_pivot):
         self._collider_pivot = collider_pivot
+        self.update_body_position()
 
     @property
     def collider_velocity(self):
@@ -189,24 +202,32 @@ class Collider2:
     def collider_velocity(self, velocity):
         if self.collider_body != None:
             self.collider_body.velocity = velocity.x, velocity.y
-        
+    @property    
+    def collider_size(self):
+        if not hasattr(self, "_collider_size"):
+            self._collider_size = Data2D(0, 0)
+        return self._collider_size
+
     #Aggiorna la posizione del body nella simulazione fisica
     def update_body_position(self):
         if self.collider_body != None:
-            self.collider_body.position = self.collider_position.x, self.collider_position.y
+            self.collider_body.position = self.collider_position.x - self.collider_pivot.x, self.collider_position.y - self.collider_pivot.y
             physics_space.reindex_shapes_for_body(self.collider_body)
 
     #Aggiorna la posizione del collider nella scena
     def update_scene_position(self):
         if self.collider_position != None:
-            self.collider_position.x, self.collider_position.y = self.collider_body.position
-
+            self.collider_position.x, self.collider_position.y = self.collider_body.position[0] + self.collider_pivot.x, self.collider_body.position[1] + self.collider_pivot.y
 class BoxCollider(Collider2):
     def start_collider(self, position, pivot, size, body_type):
         self._collider_has_started = True
-        self._collider_size = size
         self.collider_body = pk.Body(body_type=body_type)
-        self.collider_shape = pk.Poly(self.collider_body, [(0, 0), (self._collider_size.x, 0), (self._collider_size.x, self._collider_size.y), (0, self._collider_size.y)])
-        
+        self.resize(size)
+        self.collider_shape.density = 1
+
         self.collider_position = position
         self.collider_pivot = pivot
+
+    def resize(self, size):
+        self._collider_size = size
+        self.collider_shape = pk.Poly(self.collider_body, [(0, 0), (size.x, 0), (size.x, size.y), (0, size.y)])

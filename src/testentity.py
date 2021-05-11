@@ -10,7 +10,7 @@ from sgengine.physics import Collider
 class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
     
     def start(self):
-        self.movement_speed = 1
+        self.movement_speed = 300
         self.inputH = Data2D(False, False)
         self.inputV = Data2D(False, False)
         self.movement = Data2D(0, 0)
@@ -24,7 +24,7 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
         #self.collider_pivot = Data2D(3, -2)
         #self.collider_size = Data2D(6, 2)
         #self.collider_pivot_perc = Data2D(0.5, 1)
-        self.start_collider(self.position, Data2D(0, 0), Data2D(8, 8), pk.Body.KINEMATIC)
+        self.start_collider(self.position, Data2D(4, 8), Data2D(8, 8), pk.Body.DYNAMIC)
         
         self.audio1 = sg.load_audio("shoot2.wav")
         self.play_audio = False
@@ -91,7 +91,7 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
             self.audio1.play()
             self.played = True
 
-        self.collider_velocity = self.movement
+        self.collider_velocity = Data2D(self.movement.x, self.collider_velocity.y)
 
         #print(f"Vel: {self.collider_velocity}")
             
@@ -101,7 +101,7 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
     def fixed_update(self, delta_time):
 
         #print(f"Col Pos: {self.collider_position}")
-        print(f"Pos: {self.position}")
+        #print(f"Pos: {self.position}")
         
         self.virtual_pos.x = self.position.x
         self.virtual_pos.y = self.position.y
@@ -137,10 +137,10 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
         self.is_big = not self.is_big
         if self.is_big:
             self.sprite_resize(Data2D(16, 16))
-            self.collider_size = Data2D(12, 4)
+            #self.collider_size = Data2D(12, 4)
         else:
             self.sprite_resize(Data2D(8, 8))
-            self.collider_size = Data2D(6, 2)
+            #self.collider_size = Data2D(6, 2)
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))

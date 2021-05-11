@@ -46,14 +46,23 @@ class Camera(sgengine.lifecycle.Entity):
                     pygame.draw.circle(self.current_frame, (255, 255, 0), (sprite_pivot_pos.x, sprite_pivot_pos.y), 1)
 
         if self.debug_collider:
-            for c in self.current_scene().colliders_list():
+            #for c in self.current_scene().colliders_list():
+            #    collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
+            #    collider.fill((0, 255, 0))
+            #    self.current_frame.blit(collider, (c.collider_position.x - self.position.x - c.collider_pivot.x, c.collider_position.y - self.position.y - c.collider_pivot.y))
+            #    if self.debug_collider_pivot:
+            #        collider_pivot_pos = Data2D(c.collider_position.x - self.position.x, c.collider_position.y - self.position.y)
+            #        pygame.draw.circle(self.current_frame, (255, 128, 0), (collider_pivot_pos.x, collider_pivot_pos.y), 1)
+
+            for c in self.current_scene().colliders2_list():
                 collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
                 collider.fill((0, 255, 0))
-                self.current_frame.blit(collider, (c.collider_position.x - self.position.x - c.collider_pivot.x, c.collider_position.y - self.position.y - c.collider_pivot.y))
+                self.current_frame.blit(collider, (c.collider_body.position[0] -  self.position.x, c.collider_body.position[1] -  self.position.y))
                 if self.debug_collider_pivot:
                     collider_pivot_pos = Data2D(c.collider_position.x - self.position.x, c.collider_position.y - self.position.y)
                     pygame.draw.circle(self.current_frame, (255, 128, 0), (collider_pivot_pos.x, collider_pivot_pos.y), 1)
-        
+
+
         w, h = pygame.display.get_surface().get_size()
         self.current_frame = pygame.transform.scale(self.current_frame, (w, h))
         screen.blit(self.current_frame, (0,0))

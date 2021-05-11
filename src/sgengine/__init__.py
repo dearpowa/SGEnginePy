@@ -26,8 +26,8 @@ def update(events):
 def fixed_update():
     global current_scene, clock, target_framerate
     
-    clock.tick(framerate)
     physics.run_physics()
+    clock.tick(framerate)
     t = pygame.time.get_ticks()
     time = clock.get_time()
     delta_time = target_framerate / (1000 / time)
