@@ -101,8 +101,8 @@ class TestEntity(Entity, SpriteRenderer, sg.physics.BoxCollider):
         
     def fixed_update(self, delta_time):
 
-        #print(f"Col Pos: {self.collider_position}")
-        #print(f"Pos: {self.position}")
+        print(f"Col Pos: {self.collider_position}")
+        print(f"Pos: {self.position}")
         
         self.virtual_pos.x = self.position.x
         self.virtual_pos.y = self.position.y

@@ -151,7 +151,8 @@ class Collider2:
             physics_space.remove(self.collider_body)
 
         self._collider_body = collider_body
-        physics_space.add(self.collider_body)
+        if self.collider_body.body_type != pk.Body.KINEMATIC:
+            physics_space.add(self.collider_body)
 
 
     @property
