@@ -1,5 +1,4 @@
 import sgengine
-from sgengine import Data2D
 
 class Scene:
     def __init__(self, tag):
@@ -29,7 +28,7 @@ class Scene:
         
 class Entity:
     def __init__(self):
-        self.position = Data2D(0,0)
+        self.position = sgengine.Data2D(0,0)
         self.drawing_order = 0
         if sgengine.log_active:
             print("Entity created")

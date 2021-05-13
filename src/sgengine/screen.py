@@ -1,11 +1,10 @@
-import sgengine
+import sgengine as sg
 import pygame
-from sgengine import Data2D
 
-class Camera(sgengine.lifecycle.Entity):
+class Camera(sg.lifecycle.Entity):
     def start(self):
-        self.size = Data2D(128, 72)
-        self.tag = sgengine.DEFAULT_CAMERA
+        self.size = sg.Data2D(128, 72)
+        self.tag = sg.DEFAULT_CAMERA
         self.current_frame = None
         self.debug_collider = False
         self.debug_sprite_pivot = False
@@ -25,7 +24,7 @@ class Camera(sgengine.lifecycle.Entity):
 
         for e in entity_list:
             if issubclass(type(e), SpriteRenderer):
-                sprite_screen_pos = Data2D(e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.y)
+                sprite_screen_pos = sg.Data2D(e.position.x - self.position.x - e.sprite_pivot.x, e.position.y - self.position.y - e.sprite_pivot.y)
                 sprite_to_render = e.sprite_data
 
                 sprite_rect = pygame.Rect(sprite_screen_pos.x, sprite_screen_pos.y, sprite_to_render.get_width(), sprite_to_render.get_height())
@@ -42,16 +41,17 @@ class Camera(sgengine.lifecycle.Entity):
                 self.current_frame.blit(sprite_to_render, (sprite_screen_pos.x, sprite_screen_pos.y))
 
                 if self.debug_sprite_pivot:
-                    sprite_pivot_pos = Data2D(e.position.x - self.position.x, e.position.y - self.position.y)
+                    sprite_pivot_pos = sg.Data2D(e.position.x - self.position.x, e.position.y - self.position.y)
                     pygame.draw.circle(self.current_frame, (255, 255, 0), (sprite_pivot_pos.x, sprite_pivot_pos.y), 1)
 
         if self.debug_collider:
             for c in self.current_scene().colliders_list():
                 collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
                 collider.fill((0, 255, 0))
+                collider.set_alpha(128)
                 self.current_frame.blit(collider, (c.collider_position.x - self.position.x - c.collider_pivot.x, c.collider_position.y - self.position.y - c.collider_pivot.y))
                 if self.debug_collider_pivot:
-                    collider_pivot_pos = Data2D(c.collider_position.x - self.position.x, c.collider_position.y - self.position.y)
+                    collider_pivot_pos = sg.Data2D(c.collider_position.x - self.position.x, c.collider_position.y - self.position.y)
                     pygame.draw.circle(self.current_frame, (255, 128, 0), (collider_pivot_pos.x, collider_pivot_pos.y), 1)
         
         w, h = pygame.display.get_surface().get_size()
@@ -81,7 +81,7 @@ class SpriteRenderer:
     @property
     def sprite_flipped(self):
         if not hasattr(self, "_sprite_flipped"):
-            self._sprite_flipped = Data2D(False, False)
+            self._sprite_flipped = sg.Data2D(False, False)
         return self._sprite_flipped
 
     @sprite_flipped.setter
@@ -91,7 +91,7 @@ class SpriteRenderer:
     @property
     def sprite_pivot(self):
         if not hasattr(self, "_sprite_pivot"):
-            self._sprite_pivot = Data2D(0, 0)
+            self._sprite_pivot = sg.Data2D(0, 0)
         return self._sprite_pivot
 
     @sprite_pivot.setter
@@ -101,14 +101,14 @@ class SpriteRenderer:
     @property
     def sprite_pivot_perc(self):
         if self.sprite_data != None:
-            pivot_perc = Data2D(self.sprite_pivot.x / self.sprite_data.get_width(), self._sprite_pivot.y / self.sprite_data.get_height())
+            pivot_perc = sg.Data2D(self.sprite_pivot.x / self.sprite_data.get_width(), self._sprite_pivot.y / self.sprite_data.get_height())
             return pivot_perc
         return None
 
     @sprite_pivot_perc.setter
     def sprite_pivot_perc(self, sprite_pivot_perc):
         if self.sprite_data != None and sprite_pivot_perc != None:
-            self.sprite_pivot = Data2D(sprite_pivot_perc.x * self.sprite_data.get_width(), sprite_pivot_perc.y * self.sprite_data.get_height())
+            self.sprite_pivot = sg.Data2D(sprite_pivot_perc.x * self.sprite_data.get_width(), sprite_pivot_perc.y * self.sprite_data.get_height())
 
     @property
     def sprite_rotation(self):
@@ -121,7 +121,7 @@ class SpriteRenderer:
         self._sprite_rotation = sprite_rotation
 
     def set_sprite(self, sprite_path):
-        self.sprite_data = sgengine.load_image(sprite_path)
+        self.sprite_data = sg.load_image(sprite_path)
 
     def sprite_resize(self, resize_to):
         if self.sprite_data != None:
@@ -131,11 +131,11 @@ class Animation:
     def __init__(self, frame_time, *frames):
         self.animation_frames = frames
         self.frame_time = frame_time
-        self.last_time = current_time_ms()
+        self.last_time = sg.current_time_ms()
         self.current_frame = 0
     
     def reset_timer(self):
-        self.last_time = current_time_ms()
+        self.last_time = sg.current_time_ms()
     
     def get_frame_at_time(self, time):
         while self.last_time < time:

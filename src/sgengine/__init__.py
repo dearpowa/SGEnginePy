@@ -1,6 +1,9 @@
 import pygame
 import time
 import random
+import sgengine.lifecycle as lifecycle
+import sgengine.physics as physics
+import sgengine.screen as screen
 
 DEFAULT_CAMERA = "def_c"
 running = False

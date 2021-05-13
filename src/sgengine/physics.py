@@ -1,7 +1,6 @@
-import sgengine
+import sgengine as sg
 import pygame
 import random
-from sgengine import Data2D
 
 
 class Collider:
@@ -14,7 +13,7 @@ class Collider:
     @property
     def collider_position(self):
         if not hasattr(self, "_collider_position"):
-            self._collider_position = Data2D(0, 0)
+            self._collider_position = sg.Data2D(0, 0)
         return self._collider_position
 
     @collider_position.setter
@@ -24,7 +23,7 @@ class Collider:
     @property
     def collider_pivot(self):
         if not hasattr(self, "_collider_pivot"):
-            self._collider_pivot = Data2D(0, 0)
+            self._collider_pivot = sg.Data2D(0, 0)
         return self._collider_pivot
 
     @collider_pivot.setter
@@ -34,18 +33,18 @@ class Collider:
     @property
     def collider_pivot_perc(self):
         if self.collider_pivot != None and self.collider_size != None and self.collider_size.x != 0 and self.collider_size.y != 0:
-            return Data2D(self.collider_pivot.x / self.collider_size.x, self.collider_pivot.y / self.collider_size.y)
+            return sg.Data2D(self.collider_pivot.x / self.collider_size.x, self.collider_pivot.y / self.collider_size.y)
         return None
 
     @collider_pivot_perc.setter
     def collider_pivot_perc(self, collider_pivot_perc):
         if collider_pivot_perc != None and self.collider_size != None and self.collider_size.x != 0 and self.collider_size.y != 0:
-            self.collider_pivot = Data2D(collider_pivot_perc.x * self.collider_size.x, collider_pivot_perc.y * self.collider_size.y)
+            self.collider_pivot = sg.Data2D(collider_pivot_perc.x * self.collider_size.x, collider_pivot_perc.y * self.collider_size.y)
     
     @property
     def collider_size(self):
         if not hasattr(self, "_collider_size"):
-            self._collider_size = Data2D(0, 0)
+            self._collider_size = sg.Data2D(0, 0)
         return self._collider_size
 
     @collider_size.setter
@@ -57,7 +56,7 @@ class Collider:
         self.collider_pivot_perc = current_pivot_perc
 
     def get_rect(self):
-        return pygame.Rect(self.collider_position.x - self.collider_pivot.x, self.collider_position.y - self.collider_pivot.y, self.collider_size.x, self.collider_size.y)
+        return pygame.Rect(self.collider_position.x - self.collider_pivot.x -1, self.collider_position.y - self.collider_pivot.y, self.collider_size.x, self.collider_size.y)
     
     def is_colliding(self, other):
         rect1 = self.get_rect()
