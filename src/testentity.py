@@ -1,28 +1,25 @@
 import pygame
 import sgengine
-from pygame.locals import *
-from sgengine import Data2D
-from sgengine.screen import SpriteRenderer
-from sgengine.lifecycle import Entity
-from sgengine.physics import Collider
+import sgengine.lifecycle
+import sgengine.physics
+import sgengine.screen
 
-class TestEntity(Entity, SpriteRenderer, Collider):
+class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgengine.physics.Collider):
     
     def start(self):
         self.movement_speed = 1
-        self.inputH = Data2D(False, False)
-        self.inputV = Data2D(False, False)
-        self.movement = Data2D(0, 0)
+        self.inputH = sgengine.Data2D(False, False)
+        self.inputV = sgengine.Data2D(False, False)
+        self.movement = sgengine.Data2D(0, 0)
         self.set_sprite("simpleguy_small.png")
         self.toggle = False
         #self.sprite_pivot = Data2D(0, 8)
-        self.sprite_pivot_perc = Data2D(0.5, 1)
+        self.sprite_pivot_perc = sgengine.Data2D(0.5, 1)
         #self.animation = sgengine.Animation(1000, 0, 90, 180, 270)
-        self.virtual_pos = Data2D(0,0)
-        self.collider_position = self.virtual_pos
+        self.collider_position = self.position
         #self.collider_pivot = Data2D(3, -2)
-        self.collider_size = Data2D(6, 2)
-        self.collider_pivot_perc = Data2D(0.5, 1)
+        self.collider_size = sgengine.Data2D(6, 2)
+        self.collider_pivot_perc = sgengine.Data2D(0.5, 1)
         self.audio1 = sgengine.load_audio("shoot2.wav")
         self.play_audio = False
         self.played = False
@@ -60,7 +57,7 @@ class TestEntity(Entity, SpriteRenderer, Collider):
                     self.play_audio = False
                     self.played = False
         
-        self.movement = Data2D(0,0)
+        self.movement = sgengine.Data2D(0,0)
         
         if self.inputH.x:
             self.movement.x = -1
@@ -92,53 +89,22 @@ class TestEntity(Entity, SpriteRenderer, Collider):
         
         
     def fixed_update(self, delta_time):
-        
-        self.virtual_pos.x = self.position.x
-        self.virtual_pos.y = self.position.y
-        
-        self.virtual_pos.x += self.movement.x * delta_time
-        is_valid_pos_x = True
-
-        for c in self.current_scene().colliders_list():
-            #print("Self tag " + str(self.provide_tag()))
-            if self.is_colliding(c):
-                is_valid_pos_x = False
-                #print("Other tag " + str(c.provide_tag()))
-                break
-            
-        self.virtual_pos.y += self.movement.y * delta_time
-        is_valid_pos_y = True
-        
-        for c in self.current_scene().colliders_list():
-            #print("Self tag " + str(self.provide_tag()))
-            if self.is_colliding(c):
-                is_valid_pos_y = False
-                #print("Other tag " + str(c.provide_tag()))
-                break
-        
-        if is_valid_pos_x:
-            self.position.x = self.virtual_pos.x
-            
-        if is_valid_pos_y:
-            self.position.y = self.virtual_pos.y
-        
-        self.drawing_order = self.position.y
-        
+        #print(self.position)
+        sgengine.physics.move_entity(self, self.movement, delta_time)
+        #print(self.position)
         for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:
-                camera.position = Data2D(self.position.x - (camera.size.x / 2), self.position.y - (camera.size.y / 2))
-        #print(str(self.position.x) + " " + str(self.position.y))
-        
+                camera.position = sgengine.Data2D(self.position.x - (camera.size.x / 2), self.position.y - (camera.size.y / 2))
         
 
     def toggle_resize(self):
         self.is_big = not self.is_big
         if self.is_big:
-            self.sprite_resize(Data2D(16, 16))
-            self.collider_size = Data2D(12, 4)
+            self.sprite_resize(sgengine.Data2D(16, 16))
+            self.collider_size = sgengine.Data2D(12, 4)
         else:
-            self.sprite_resize(Data2D(8, 8))
-            self.collider_size = Data2D(6, 2)
+            self.sprite_resize(sgengine.Data2D(8, 8))
+            self.collider_size = sgengine.Data2D(6, 2)
     #def draw(self, screen):
         #pygame.draw.rect(screen, "red", (self.position.x, self.position.y, 50, 50), 0)
         #screen.blit(self.sprite, (self.position.x, self.position.y))
