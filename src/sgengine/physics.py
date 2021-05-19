@@ -1,4 +1,4 @@
-import sgengine as sg
+import sgengine
 import pygame
 import random
 from sgengine import Data2D
@@ -7,12 +7,12 @@ import pymunk as pk
 
 physics_space = None
 
-def apply_gravity(entity: sg.lifecycle.Entity, delta_time):
+def apply_gravity(entity: sgengine.lifecycle.Entity, delta_time):
     move_entity(entity, Data2D(0, 2), delta_time)
 
-def move_entity(entity: sg.lifecycle.Entity, how_much: Data2D, delta_time, precision=5):
+def move_entity(entity: sgengine.lifecycle.Entity, how_much: Data2D, delta_time):
     if issubclass(type(entity), Collider):
-        fract = delta_time / precision
+        fract = 1 / delta_time
         last_pos = Data2D(entity.position.x, entity.position.y)
         virtual_position = Data2D(entity.position.x, entity.position.y)
         virtual_collider = Collider()
@@ -23,11 +23,11 @@ def move_entity(entity: sg.lifecycle.Entity, how_much: Data2D, delta_time, preci
 
         #print(last_pos)
         is_valid = True
-        for i in range(1, precision + 1):
+        for i in range(1, delta_time + 1):
             #print(i)
             virtual_position.x += round(how_much.x * fract, 1)
             virtual_position.y += round(how_much.y * fract, 1)
-            for c in sg.current_scene.colliders_list():
+            for c in sgengine.current_scene.colliders_list():
                 if virtual_collider.is_colliding(c):
                     is_valid = False
                     continue
@@ -55,7 +55,7 @@ def run_physics():
     
     for x in range(120):
         physics_space.step(1/120)
-    for c in sg.current_scene.colliders2_list():
+    for c in sgengine.current_scene.colliders2_list():
         c.update_scene_position()
 
 class Collider:
