@@ -1,8 +1,5 @@
 import pygame
 import sgengine
-import sgengine.lifecycle
-import sgengine.physics
-import sgengine.screen
 
 class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgengine.physics.Collider):
     
@@ -90,7 +87,7 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         
     def fixed_update(self, delta_time):
         #print(self.position)
-        sgengine.physics.move_entity(self, self.movement, delta_time)
+        sgengine.physics.move_entity(self, self.movement, delta_time, per_axis=True)
         #print(self.position)
         for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:

@@ -1,7 +1,6 @@
 import sgengine
 import pygame
 import random
-import sgengine.lifecycle
 
 def apply_gravity(entity: sgengine.lifecycle.Entity, delta_time):
     move_entity(entity, sgengine.Data2D(0, 2), delta_time, False)

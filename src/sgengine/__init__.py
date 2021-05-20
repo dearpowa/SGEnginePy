@@ -118,3 +118,6 @@ class Data2D:
     
     def __str__(self):
         return f'Data2D({self.x},{self.y})'
+
+
+from sgengine import lifecycle, physics, screen
