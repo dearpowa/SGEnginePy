@@ -2,15 +2,16 @@ import sgengine
 import pygame
 import random
 
-def apply_gravity(entity: sgengine.lifecycle.Entity, delta_time):
-    move_entity(entity, sgengine.Data2D(0, 2), delta_time, False)
+gravity: float = 2
 
-def move_entity(entity: sgengine.lifecycle.Entity, how_much: sgengine.Data2D, delta_time, per_axis=False, fractal=False):
+def apply_gravity(entity: sgengine.lifecycle.Entity, delta_time, per_axis=False):
+    move_entity(entity, sgengine.Data2D(0, gravity), delta_time, per_axis)
+
+def move_entity(entity: sgengine.lifecycle.Entity, how_much: sgengine.Data2D, delta_time, per_axis=False):
     if how_much.x == 0 and how_much.y == 0:
         return
     
     if issubclass(type(entity), Collider):
-        fract = 1 / delta_time if fractal else 1
         virtual_position = sgengine.Data2D(entity.collider_position.x, entity.collider_position.y)
         virtual_collider = Collider()
         virtual_collider.collider_tag = entity.collider_tag
@@ -18,9 +19,8 @@ def move_entity(entity: sgengine.lifecycle.Entity, how_much: sgengine.Data2D, de
         virtual_collider.collider_size = entity.collider_size
         virtual_collider.collider_pivot_perc = entity.collider_pivot_perc
 
-        if not fractal:
-            how_much.x *= delta_time
-            how_much.y *= delta_time
+        how_much.x *= delta_time
+        how_much.y *= delta_time
 
         print(f"Howmuch: {how_much}")
 
@@ -28,19 +28,15 @@ def move_entity(entity: sgengine.lifecycle.Entity, how_much: sgengine.Data2D, de
         is_valid = sgengine.Data2D(True, True)
 
         c_list = sgengine.current_scene.colliders_list()
-
-        repetitions = int(delta_time / fract) if fractal else 1
-        print(f"Repetitions: {repetitions}")
-
-        for i in range(0, repetitions):
+        for i in range(1, 2):
             #print(i)
-            virtual_position.x += round(how_much.x * fract, 1)
+            virtual_position.x += round(how_much.x * (1/i), 1)
             for c in c_list:
                 if virtual_collider.is_colliding(c):
                     is_valid.x = False
                     continue
 
-            virtual_position.y += round(how_much.y * fract, 1)
+            virtual_position.y += round(how_much.y * (1/i), 1)
             for c in c_list:
                 if virtual_collider.is_colliding(c):
                     is_valid.y = False
@@ -61,8 +57,7 @@ def move_entity(entity: sgengine.lifecycle.Entity, how_much: sgengine.Data2D, de
     else:
         entity.position.x += how_much.x * delta_time
         entity.position.y += how_much.y * delta_time
-    #print(entity.position)
-
+    #print(entity.position)   
 
 class Collider:
     @property

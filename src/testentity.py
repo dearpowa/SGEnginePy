@@ -4,11 +4,12 @@ import sgengine
 class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgengine.physics.Collider):
     
     def start(self):
-        self.movement_speed = 1
+        self.movement_speed = 10
         self.inputH = sgengine.Data2D(False, False)
         self.inputV = sgengine.Data2D(False, False)
         self.movement = sgengine.Data2D(0, 0)
         self.set_sprite("simpleguy_small.png")
+        self.sprite_resize(sgengine.Data2D(80, 80))
         self.toggle = False
         #self.sprite_pivot = Data2D(0, 8)
         self.sprite_pivot_perc = sgengine.Data2D(0.5, 1)
@@ -87,7 +88,8 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         
     def fixed_update(self, delta_time):
         #print(self.position)
-        sgengine.physics.move_entity(self, self.movement, delta_time, per_axis=True)
+        sgengine.physics.apply_gravity(self, delta_time, True)
+        sgengine.physics.move_entity(self, sgengine.Data2D(self.movement.x, 0), delta_time)
         #print(self.position)
         for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:
