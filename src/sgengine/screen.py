@@ -38,6 +38,9 @@ class Camera(sgengine.lifecycle.Entity):
                 if e.sprite_rotation != 0:
                     sprite_to_render = pygame.transform.rotate(sprite_to_render, e.sprite_rotation)
 
+                if e.sprite_colorkey != None:
+                    sprite_to_render.set_colorkey(e.sprite_colorkey)
+
                 self.current_frame.blit(sprite_to_render, (sprite_screen_pos.x, sprite_screen_pos.y))
 
                 if self.debug_sprite_pivot:
@@ -65,6 +68,11 @@ class SpriteRenderer:
     def sprite_data(self):
         if not hasattr(self, "_sprite_data"):
             self._sprite_data = None
+        
+        #Aggiunto per gestione color key
+        if self.sprite_colorkey != None:
+            self._sprite_data.set_colorkey(self.sprite_colorkey)
+
         return self._sprite_data
 
     @sprite_data.setter
@@ -118,6 +126,16 @@ class SpriteRenderer:
     @sprite_rotation.setter
     def sprite_rotation(self, sprite_rotation):
         self._sprite_rotation = sprite_rotation
+
+    @property
+    def sprite_colorkey(self):
+        if not hasattr(self, "_sprite_colorkey"):
+            self._sprite_colorkey = None
+        return self._sprite_colorkey
+    
+    @sprite_colorkey.setter
+    def sprite_colorkey(self, sprite_colorkey):
+        self._sprite_colorkey = sprite_colorkey
 
     def set_sprite(self, sprite_path):
         self.sprite_data = sgengine.load_image(sprite_path)

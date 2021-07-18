@@ -8,7 +8,8 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         self.inputH = sgengine.Data2D(False, False)
         self.inputV = sgengine.Data2D(False, False)
         self.movement = sgengine.Data2D(0, 0)
-        self.set_sprite("simpleguy_small.png")
+        self.set_sprite("simpleguy_small.bmp")
+        self.sprite_colorkey = (0,0,0)
         self.sprite_resize(sgengine.Data2D(80, 80))
         self.toggle = False
         #self.sprite_pivot = Data2D(0, 8)
