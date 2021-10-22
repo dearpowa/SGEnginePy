@@ -30,7 +30,7 @@ class GameManager(Entity):
                 camera.debug_collider_pivot = True
         
         sgengine.physics.gravity = 20
-        sgengine.framerate = 30
+        sgengine.framerate = 60
         sgengine.target_framerate = 30
         sgengine.log_active = True
         sgengine.change_resolution((800, 600))

@@ -11,6 +11,7 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         self.set_sprite("simpleguy_small.bmp")
         self.sprite_colorkey = (0,0,0)
         self.sprite_resize(sgengine.Data2D(80, 80))
+        self.position = sgengine.Data2D(200, 200)
         self.toggle = False
         #self.sprite_pivot = Data2D(0, 8)
         self.sprite_pivot_perc = sgengine.Data2D(0.5, 1)
@@ -23,6 +24,7 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         self.play_audio = False
         self.played = False
         self.is_big = False
+        self.font = pygame.font.Font("assets/OpenSans-Regular.ttf", 30)
         
         #print(self.current_scene().tag)
     
@@ -89,12 +91,16 @@ class TestEntity(sgengine.lifecycle.Entity, sgengine.screen.SpriteRenderer, sgen
         
     def fixed_update(self, delta_time):
         #print(self.position)
-        sgengine.physics.apply_gravity(self, delta_time, True)
-        sgengine.physics.move_entity(self, sgengine.Data2D(self.movement.x, 0), delta_time)
+        #sgengine.physics.apply_gravity(self, delta_time, True)
+        #sgengine.physics.move_entity(self, sgengine.Data2D(self.movement.x, 0), delta_time)
         #print(self.position)
-        for camera in self.current_scene().camera_list():
+        fps = sgengine.clock.get_fps()
+        self.text = self.font.render("{:.1f}".format(fps), True, (128, 128, 128))
+        self.rect = self.text.get_rect(top=0, left=0)
+
+        """for camera in self.current_scene().camera_list():
             if camera.tag == sgengine.DEFAULT_CAMERA:
-                camera.position = sgengine.Data2D(self.position.x - (camera.size.x / 2), self.position.y - (camera.size.y / 2))
+                camera.position = sgengine.Data2D(self.position.x - (camera.size.x / 2), self.position.y - (camera.size.y / 2))"""
         
 
     def toggle_resize(self):

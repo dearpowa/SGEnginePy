@@ -6,9 +6,8 @@ from gamemanager import GameManager
 from bgtest import BG
 
 entity = TestEntity()
-gm = GameManager()
 scene = Scene("scena 1")
 camera = Camera()
-scene.add_entities(entity, camera, gm, BG())
+scene.add_entities(entity, camera)
 
 sgengine.start(scene)

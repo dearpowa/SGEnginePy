@@ -3,7 +3,7 @@ import pygame
 
 class Camera(sgengine.lifecycle.Entity):
     def start(self):
-        self.size = sgengine.Data2D(128, 72)
+        self.size = sgengine.Data2D(800, 600)
         self.tag = sgengine.DEFAULT_CAMERA
         self.current_frame = None
         self.debug_collider = False
@@ -47,6 +47,8 @@ class Camera(sgengine.lifecycle.Entity):
                     sprite_pivot_pos = sgengine.Data2D(e.position.x - self.position.x, e.position.y - self.position.y)
                     pygame.draw.circle(self.current_frame, (255, 255, 0), (sprite_pivot_pos.x, sprite_pivot_pos.y), 1)
 
+            if hasattr(e, "text") and e.text != None and hasattr(e, "rect") and e.rect != None:
+                self.current_frame.blit(e.text, e.rect)
         if self.debug_collider:
             for c in self.current_scene().colliders_list():
                 collider = pygame.Surface((c.collider_size.x, c.collider_size.y))
@@ -163,4 +165,3 @@ class Animation:
                 self.current_frame = 0
         
         return self.animation_frames[self.current_frame]
- 

@@ -12,6 +12,7 @@ target_framerate = 60
 log_active = False
 current_res = (0,0)
 fullscreen = False
+fps = 0
 
 #stuff for running
 def clear_screen():
@@ -50,7 +51,7 @@ def start(scene):
     
     current_scene = scene
     
-    res = (720, 400)
+    res = (800, 600)
     
     change_resolution(res)
     pygame.display.set_caption("SGEnginePy v0.1")
